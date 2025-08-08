@@ -4,7 +4,7 @@
 #include <SFML/Graphics/Color.hpp>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/System/Time.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <SFML/System/CVector2.hpp>
 #include <SFML/Window/Joystick.hpp>
 
 #include <optional>

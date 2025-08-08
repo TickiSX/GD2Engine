@@ -146,7 +146,7 @@ namespace ImGui
 // Add this to your imconfig.h
 
 #include <SFML/Graphics/Color.hpp>
-#include <SFML/System/Vector2.hpp>
+#include <SFML/System/CVector2.hpp>
 
 #include <cstdint>
 
