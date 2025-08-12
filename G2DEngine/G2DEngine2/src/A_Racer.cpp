@@ -12,7 +12,7 @@ static inline sf::Vector2f vnorm(const sf::Vector2f& v) {
 }
 static inline float clamp01(float x) { return std::max(0.f, std::min(1.f, x)); }
 
-A_Racer::A_Racer(const std::string& name, int / playerId / )
+A_Racer::A_Racer(const std::string& name, int /* playerId */)
     : Actor(name) {
 }
 

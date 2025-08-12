@@ -23,8 +23,8 @@ public:
     ~Transform() override = default;
 
     void start() override {}
-    void update(float / deltaTime / ) override {}
-    void render(const EngineUtilities::TSharedPointer<Window>& / window / ) override {}
+    void update(float /* deltaTime */) override {}
+    void render(const EngineUtilities::TSharedPointer<Window>& /*window*/) override {}
     void destroy() override {}
 
     void seek(const sf::Vector2f& target, float maxSpeed, float deltaTime, float arriveRadius = 10.f) {

@@ -1,5 +1,14 @@
 #pragma once
-
+enum ComponentType {
+	None = 0,       ///< No component
+	TRANSFORM = 1,  ///< Transform component (position, rotation, scale)
+	SRPITE = 2,     ///< Sprite component (2D image)
+	RENDERER = 3,   ///< Renderer component
+	PHYSICS = 4,    ///< Physics simulation component
+	AUDIOSOURCE = 5,///< Audio source component
+	SHAPE = 6,      ///< Shape component (geometry-based)
+	TEXTURE = 7     ///< Texture component (for applying textures)
+};
 /**
  * @file Component.h
  * @brief Declares the base Component class and ComponentType enumeration for entity components.
