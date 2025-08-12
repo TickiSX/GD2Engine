@@ -311,10 +311,10 @@ bool BaseApp::init()
     m_path = densifyClosed(m_path, 30.f);
 
     // 5) Corredores (Mario, Luigi, Peach, Yoshi)
-    auto r1 = EngineUtilities::MakeShared<A_Racer>("Mario", 1);
-    auto r2 = EngineUtilities::MakeShared<A_Racer>("Luigi", 2);
-    auto r3 = EngineUtilities::MakeShared<A_Racer>("Peach", 3);
-    auto r4 = EngineUtilities::MakeShared<A_Racer>("Yoshi", 4);
+    auto r1 = EngineUtilities::MakeShared<A_Racer>("YOSHI", 1);
+    auto r2 = EngineUtilities::MakeShared<A_Racer>("MARIO", 2);
+    auto r3 = EngineUtilities::MakeShared<A_Racer>("SONIC", 3);
+    auto r4 = EngineUtilities::MakeShared<A_Racer>("RAYO", 4);
 
     // Carriles por offset (valores moderados; ajusta según ancho de pista)
     auto base = m_path;
@@ -334,20 +334,20 @@ bool BaseApp::init()
     r4->getComponent<Transform>()->setPosition(laneC.front() + sf::Vector2f{ 16.f, 16.f });
 
     // Texturas de personajes
-    resourceMan.loadTexture("Sprites/Mario", "png");
-    resourceMan.loadTexture("Sprites/Luigi", "png");
-    resourceMan.loadTexture("Sprites/Peach", "png");
-    resourceMan.loadTexture("Sprites/Yoshi", "png");
+    resourceMan.loadTexture("Sprites/YOSHI", "png");
+    resourceMan.loadTexture("Sprites/MARIO", "png");
+    resourceMan.loadTexture("Sprites/SONIC", "png");
+    resourceMan.loadTexture("Sprites/RAYO", "png");
 
-    auto texMario = resourceMan.getTexture("Sprites/Mario");
-    auto texLuigi = resourceMan.getTexture("Sprites/Luigi");
-    auto texPeach = resourceMan.getTexture("Sprites/Peach");
-    auto texYoshi = resourceMan.getTexture("Sprites/Yoshi");
+    auto texYOSHI = resourceMan.getTexture("Sprites/YOSHI");
+    auto texMARIO = resourceMan.getTexture("Sprites/MARIO");
+    auto texSONIC = resourceMan.getTexture("Sprites/SONIC");
+    auto texRAYO = resourceMan.getTexture("Sprites/RAYO");
 
-    if (!texMario.isNull()) r1->setTexture(texMario);
-    if (!texLuigi.isNull()) r2->setTexture(texLuigi);
-    if (!texPeach.isNull()) r3->setTexture(texPeach);
-    if (!texYoshi.isNull()) r4->setTexture(texYoshi);
+    if (!texYOSHI.isNull()) r1->setTexture(texYOSHI);
+    if (!texMARIO.isNull()) r2->setTexture(texMARIO);
+    if (!texSONIC.isNull()) r3->setTexture(texSONIC);
+    if (!texRAYO.isNull()) r4->setTexture(texRAYO);
 
     m_racers = { r1, r2, r3, r4 };
 
@@ -376,10 +376,10 @@ bool BaseApp::init()
                 xf->setScale({ s, s });
             }
         };
-    fitSprite(r1, texMario, 48.f);
-    fitSprite(r2, texLuigi, 48.f);
-    fitSprite(r3, texPeach, 48.f);
-    fitSprite(r4, texYoshi, 48.f);
+    fitSprite(r1, texYOSHI, 48.f);
+    fitSprite(r2, texMARIO, 48.f);
+    fitSprite(r3, texSONIC, 48.f);
+    fitSprite(r4, texRAYO, 48.f);
 
     // 7) GUI arranque
     gui.setRacers(m_racers);

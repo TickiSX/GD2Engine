@@ -25,32 +25,31 @@
  * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
- */
+*/
 #pragma once
-
 namespace EngineUtilities {
-
     /**
-     * @brief Static pointer class for managing a single static instance.
-     *
-     * Manages a single static object pointer and provides methods for access,
-     * null checks, and basic memory management.
-     */
+   * @brief Clase TStaticPtr para manejo de un puntero estático.
+   *
+   * La clase TStaticPtr gestiona un único objeto estático y proporciona métodos
+   * para acceder al objeto, verificar si el puntero es nulo y realizar operaciones
+   * básicas de manejo de memoria.
+   */
     template<typename T>
     class TStaticPtr
     {
     public:
         /**
-         * @brief Default constructor initializes the static pointer to nullptr.
+         * @brief Inicializa el puntero estático al objeto.
+         *
+         * Inicializa el puntero estático a nullptr.
          */
         TStaticPtr() = default;
 
         /**
-         * @brief Constructor accepting a raw pointer.
+         * @brief Constructor que toma un puntero crudo.
          *
-         * Deletes any existing instance before taking ownership of the new pointer.
-         *
-         * @param rawPtr Raw pointer to manage.
+         * @param rawPtr Puntero crudo al objeto que se va a gestionar.
          */
         explicit TStaticPtr(T* rawPtr)
         {
@@ -62,7 +61,9 @@ namespace EngineUtilities {
         }
 
         /**
-         * @brief Destructor deletes the managed instance if it exists.
+         * @brief Destructor.
+         *
+         * Libera la memoria del objeto gestionado si es la última instancia.
          */
         ~TStaticPtr()
         {
@@ -74,9 +75,9 @@ namespace EngineUtilities {
         }
 
         /**
-         * @brief Returns the managed static pointer.
+         * @brief Obtener el puntero crudo.
          *
-         * @return Raw pointer to the managed object.
+         * @return Puntero crudo al objeto gestionado.
          */
         static T* get()
         {
@@ -84,9 +85,9 @@ namespace EngineUtilities {
         }
 
         /**
-         * @brief Checks if the static pointer is null.
+         * @brief Verificar si el puntero es nulo.
          *
-         * @return True if the pointer is null, false otherwise.
+         * @return true si el puntero es nulo, false en caso contrario.
          */
         static bool isNull()
         {
@@ -94,11 +95,11 @@ namespace EngineUtilities {
         }
 
         /**
-         * @brief Resets the static pointer to manage a new object or nullptr.
+         * @brief Reiniciar el puntero estático con un nuevo objeto.
          *
-         * Deletes the current instance if it exists, then takes ownership of the new pointer.
+         * Libera la memoria del objeto actual (si existe) y toma la propiedad de un nuevo puntero crudo.
          *
-         * @param rawPtr New raw pointer to manage (default nullptr).
+         * @param rawPtr Puntero crudo al nuevo objeto que se va a gestionar.
          */
         static void reset(T* rawPtr = nullptr)
         {
@@ -110,11 +111,63 @@ namespace EngineUtilities {
         }
 
     private:
-        static T* instance; ///< Static pointer to the managed object.
+        static T* instance; ///< Puntero estático al objeto gestionado.
     };
 
-    // Definition of the static member outside the class template
+    /*
+    // Inicializar el puntero estático
     template<typename T>
     T* TStaticPtr<T>::instance = nullptr;
 
-} // namespace EngineUtilities
+    // Ejemplo de uso de TStaticPtr
+    class MyClass
+    {
+    public:
+      MyClass(int value) : value(value)
+      {
+        std::cout << "MyClass constructor: " << value << std::endl;
+      }
+
+      ~MyClass()
+      {
+        std::cout << "MyClass destructor: " << value << std::endl;
+      }
+
+      void display() const
+      {
+        std::cout << "Value: " << value << std::endl;
+      }
+
+    private:
+      int value;
+    };
+
+    int main()
+    {
+      {
+        // Crear un TStaticPtr usando un puntero crudo
+        TStaticPtr<MyClass>::reset(new MyClass(10));
+        TStaticPtr<MyClass>::get()->display(); // Output: Value: 10
+
+        // Comprobar si el puntero no es nulo
+        if (!TStaticPtr<MyClass>::isNull())
+        {
+          std::cout << "TStaticPtr is not null" << std::endl;
+        }
+
+        // Reiniciar TStaticPtr con un nuevo objeto
+        TStaticPtr<MyClass>::reset(new MyClass(20));
+        TStaticPtr<MyClass>::get()->display(); // Output: Value: 20
+
+        // Reiniciar con nullptr
+        TStaticPtr<MyClass>::reset();
+        if (TStaticPtr<MyClass>::isNull())
+        {
+          std::cout << "TStaticPtr is null after reset" << std::endl;
+        }
+      }
+
+      return 0;
+    }
+    */
+}
