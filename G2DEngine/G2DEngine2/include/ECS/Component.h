@@ -19,20 +19,53 @@ enum ComponentType {
 class
 	Window;
 
+#pragma once
+/**
+ * @file Component.h
+ * @brief Declara la clase base Component y la enumeración ComponentType para los componentes de entidad.
+ */
+
+#include "../Prerequisites.h"
+
+class Window;
+
 /**
  * @enum ComponentType
- * @brief Enumeration of all possible component types used in the entity-component system.
+ * @brief Enumeración de todos los posibles tipos de componentes usados en el sistema ECS.
  */
-enum
-	ComponentType {
-	None = 0,       ///< No component
-	TRANFORM = 1,   ///< Transform component (position, rotation, scale)
-	SRPITE = 2,     ///< Sprite component (2D image)
-	RENDERER = 3,   ///< Renderer component
-	PHYSICS = 4,    ///< Physics simulation component
-	AUDIOSOURCE = 5,///< Audio source component
-	SHAPE = 6,      ///< Shape component (geometry-based)
-	TEXTURE = 7     ///< Texture component (for applying textures)
+enum ComponentType {
+	None = 0,       ///< Sin componente
+	TRANSFORM = 1,  ///< Componente de transformación (posición, rotación, escala)
+	SRPITE = 2,     ///< Componente de sprite (imagen 2D)
+	RENDERER = 3,   ///< Componente de renderizado
+	PHYSICS = 4,    ///< Componente de simulación física
+	AUDIOSOURCE = 5,///< Componente de fuente de audio
+	SHAPE = 6,      ///< Componente de forma (basado en geometría)
+	TEXTURE = 7     ///< Componente de textura (para aplicar texturas)
+};
+
+/**
+ * @class Component
+ * @brief Clase base abstracta para todos los componentes del motor de juego.
+ *
+ * Los componentes representan comportamiento o datos asociados a los objetos del juego.
+ * Esta clase provee métodos virtuales que deben ser sobreescritos por los componentes derivados.
+ */
+class Component {
+public:
+	Component() = default;
+	Component(const ComponentType type) : m_type(type) {}
+	virtual ~Component() = default;
+
+	virtual void start() = 0;
+	virtual void update(float deltaTime) = 0;
+	virtual void render(const EngineUtilities::TSharedPointer<Window>& window) = 0;
+	virtual void destroy() = 0;
+
+	ComponentType getType() const { return m_type; }
+
+protected:
+	ComponentType m_type;
 };
 
 /**

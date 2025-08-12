@@ -72,7 +72,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)bin/$(PlatformShortName)/</OutDir>
+    <OutDir>C:\GD2Engine\G2DEngine\bin\x64</OutDir>
     <IntDir>$(SolutionDir)intermediate/$(ProjectName)/$(PlatformShortName)/$(Configuration)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
@@ -132,7 +132,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\GD2Engine\G2DEngine\ThirdParties\imgui-master;C:\GD2Engine\G2DEngine\ThirdParties\SFML-3.0.0\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\include;C:\GD2Engine\G2DEngine\ThirdParties\imgui-master;C:\GD2Engine\G2DEngine\ThirdParties\imgui-sfml-master;C:\GD2Engine\G2DEngine\ThirdParties\SFML-3.0.0\include</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <IntrinsicFunctions>true</IntrinsicFunctions>
     </ClCompile>
