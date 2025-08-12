@@ -1,94 +1,133 @@
 ﻿#pragma once
-#include "..//Prerequisites.h"
-#include "Entity.h"
+
+/**
+ * @file Actor.h
+ * @brief Declara la clase Actor, entidad básica que contiene componentes (ECS) y puede renderizarse.
+ */
+
+#include <string>
+#include <vector>
+#include <type_traits>
+
+#include "Prerequisites.h"
+#include "Memory/TSharedPointer.h"
+#include "ECS/Component.h"
 #include "CShape.h"
-#include "Transform.h"
+#include "ECS/Transform.h"
 #include "ECS/Texture.h"
+
+class Window;
 
 /**
  * @class Actor
- * @brief Representa una entidad activa del mundo del juego que puede tener componentes, ser actualizada, renderizada y destruida.
- * Hereda de Entity.
+ * @brief Actor básico que contiene componentes y puede representarse en el mundo.
  */
-class
-    Actor : public Entity {
+class Actor {
 public:
     /**
-     * @brief Constructor por defecto del Actor.
+     * @brief Construye un actor con nombre y añade por defecto Transform y CShape.
+     * @param name Nombre del actor.
      */
-    Actor() = default;
+    explicit Actor(const std::string& name)
+        : m_name(name)
+    {
+        // Componentes base por defecto: shape y transform
+        addComponent(EngineUtilities::MakeShared<CShape>());
+        addComponent(EngineUtilities::MakeShared<Transform>());
+    }
 
     /**
-     * @brief Constructor que inicializa el Actor con un nombre.
-     * @param actorName Nombre a asignar al actor.
+     * @brief Destructor virtual por defecto.
      */
-    Actor(const std::string& actorName);
+    virtual ~Actor() = default;
 
     /**
-     * @brief Destructor virtual por defecto del Actor.
+     * @brief Hook de inicio; se llama una vez cuando el actor se inicializa.
      */
-    virtual
-        ~Actor() = default;
+    virtual void start() {}
 
     /**
-     * @brief M�todo que se llama al iniciar el Actor. Puede usarse para inicializar componentes.
+     * @brief Actualiza la lógica del actor cada frame.
+     * @param deltaTime Tiempo transcurrido desde el último frame, en segundos.
      */
-    void
-        start() override;
+    virtual void update(float deltaTime);
 
     /**
-     * @brief M�todo que se llama cada frame para actualizar el estado del Actor.
-     * @param deltaTime Tiempo transcurrido desde la �ltima actualizaci�n.
+     * @brief Dibuja el actor en la ventana indicada (formas, sprites, etc.).
+     * @param window Ventana/render target donde se dibujará.
      */
-    void
-        update(float deltaTime) override;
+    virtual void render(const EngineUtilities::TSharedPointer<Window>& window);
 
     /**
-     * @brief Renderiza el Actor en la ventana proporcionada.
-     * @param window Referencia compartida a la ventana donde se renderiza el actor.
+     * @brief Libera recursos asociados al actor (si aplica).
      */
-    void
-        render(const EngineUtilities::TSharedPointer<Window>& window) override;
+    virtual void destroy() {}
 
     /**
-     * @brief M�todo que se llama para destruir el Actor y limpiar sus recursos.
+     * @brief Obtiene el nombre del actor.
+     * @return Referencia constante al nombre.
      */
-    void
-        destroy() override;
-
-    void
-        setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
-
-
+    const std::string& getName() const { return m_name; }
 
     /**
-     * @brief Obtiene un componente del tipo especificado si existe en el Actor.
-     * @tparam T Tipo del componente a buscar.
-     * @return Referencia compartida al componente del tipo T si se encuentra; nullptr en caso contrario.
+     * @brief Cambia el nombre del actor.
+     * @param n Nuevo nombre.
      */
-    template <typename T>
-    EngineUtilities::TSharedPointer<T> getComponent();
+    void setName(const std::string& n) { m_name = n; }
+
+    /**
+     * @brief Asigna el identificador de jugador asociado al actor.
+     * @param id Identificador (0 si no aplica).
+     */
+    void setPlayerId(int id) { m_playerId = id; }
+
+    /**
+     * @brief Devuelve el identificador de jugador asociado.
+     * @return ID de jugador.
+     */
+    int getPlayerId() const { return m_playerId; }
+
+    /**
+     * @brief Busca y devuelve el primer componente del tipo solicitado.
+     * @tparam T Tipo de componente derivado de Component.
+     * @return Shared pointer al componente encontrado o nulo si no existe.
+     */
+    template<typename T>
+    EngineUtilities::TSharedPointer<T> getComponent() const {
+        for (const auto& comp : components) {
+            if (auto casted = comp.template dynamic_pointer_cast<T>()) {
+                return casted;
+            }
+        }
+        return EngineUtilities::TSharedPointer<T>();
+    }
+
+    /**
+     * @brief Añade un componente al actor.
+     * @tparam T Tipo del componente (debe derivar de Component).
+     * @param component Shared pointer al componente a agregar.
+     */
+    template<typename T>
+    void addComponent(const EngineUtilities::TSharedPointer<T>& component) {
+        static_assert(std::is_base_of<Component, T>::value,
+            "addComponent<T> sólo acepta Component derivados");
+        EngineUtilities::TSharedPointer<Component> baseComp = component;
+        components.push_back(baseComp);
+    }
+
+    /**
+     * @brief Asigna una textura (componente Texture) al actor.
+     * @param texture Componente de textura que envuelve un sf::Texture.
+     */
+    void setTexture(const EngineUtilities::TSharedPointer<Texture>& texture);
 
 private:
-    /**
-     * @brief Nombre del actor.
-     */
-    std::string m_name = "Actor";
+    /** @brief Nombre del actor. */
+    std::string m_name;
 
+    /** @brief Lista de componentes que posee el actor. */
+    std::vector<EngineUtilities::TSharedPointer<Component>> components;
+
+    /** @brief Identificador de jugador (para UI/controles); 0 si no aplica. */
+    int m_playerId = 0;
 };
-
-/**
- * @brief Implementaci�n de la plantilla getComponent.
- * @tparam T Tipo del componente a buscar.
- * @return Referencia compartida al componente del tipo T si se encuentra; nullptr en caso contrario.
- */
-template <typename T>
-inline EngineUtilities::TSharedPointer<T> Actor::getComponent() {
-    for (auto& component : components) {
-        EngineUtilities::TSharedPointer<T> specificComponent = component.template dynamic_pointer_cast<T>();
-        if (specificComponent) {
-            return specificComponent;
-        }
-    }
-    return EngineUtilities::TSharedPointer<T>();
-}

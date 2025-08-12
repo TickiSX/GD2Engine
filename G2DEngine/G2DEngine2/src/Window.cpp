@@ -1,156 +1,98 @@
 #include "Window.h"
-#include <BaseApp.h>
+#include <iostream> // mensajes de error o debug
 
-/**
- * @class Window
- *
- * @brief Encapsulates an SFML window, handling creation, events, rendering, and destruction.
- */
-
- /**
-  * @brief Constructs a new Window object.
-  *
-  * Initializes an SFML render window with the specified width, height, and title.
-  * It also sets the framerate limit and verifies successful creation.
-  *
-  * @param width Width of the window in pixels.
-  * @param height Height of the window in pixels.
-  * @param title Title of the window.
-  */
+// Constructor: crea la ventana y configura FPS / vista por defecto
 Window::Window(int width, int height, const std::string& title) {
-    // Crear ventana con SFML 3
+    // Crea sf::RenderWindow dentro de un TUniquePtr (propiedad exclusiva del wrapper)
     m_windowPtr = EngineUtilities::MakeUnique<sf::RenderWindow>(
-        sf::VideoMode({ static_cast<unsigned int>(width),
-                        static_cast<unsigned int>(height) }),
-        title,
-        sf::Style::Default
+        sf::VideoMode({ static_cast<unsigned>(width), static_cast<unsigned>(height) }),
+        title
     );
 
-
-
-    if (!m_windowPtr.isNull()) {
-        m_windowPtr->setFramerateLimit(60);
-        MESSAGE("Window", "Window", "Window created successfully");
+    // Si la creación fue exitosa, configura límites y vista inicial
+    if (m_windowPtr && m_windowPtr->isOpen()) {
+        m_windowPtr->setFramerateLimit(60);     // cap de FPS (más estable para debug)
+        m_view = m_windowPtr->getDefaultView(); // guarda la vista por defecto
+        MESSAGE("Window", "Window", "Created successfully");
     }
     else {
-        ERROR("Window", "Window", "Failed to create window");
+        ERROR("Window", "Window", "Failed to create RenderWindow");
     }
-
-    //Initialize the ImGui Resource
-    ImGui::SFML::Init(*m_windowPtr);
 }
 
-/**
- * @brief Destroys the Window object and safely releases its resources.
- */
+// Destructor: asegura limpieza ordenada
 Window::~Window() {
-    ImGui::SFML::Shutdown();
-    m_windowPtr.release();
-    //SAFE_PTR_RELEASE(window.h);
+    destroy();
 }
 
-/**
- * @brief Handles window events such as closing.
- *
- * Processes the event queue to detect and handle user actions like closing the window.
- */
-void
-Window::handleEvents()
-{
-    //while (m_windowPtr->isOpen())
-    //{
-    //}
-      // Process events
-    while (const std::optional event = m_windowPtr->pollEvent())
-    {
-        ImGui::SFML::ProcessEvent(*m_windowPtr, *event);
-        // Close window: exit
-        if (event->is<sf::Event::Closed>())
-            m_windowPtr->close();
+// Bucle de eventos: despacha a callback y maneja cierre de ventana
+void Window::handleEvents(const std::function<void(const sf::Event&)>& callback) {
+    if (!m_windowPtr) return;
+
+    // En SFML 3, pollEvent() retorna std::optional<sf::Event>
+    while (auto event = m_windowPtr->pollEvent()) {
+        // Si hay callback del usuario, se invoca con el evento actual
+        if (callback) callback(*event);
+
+        // Cierre de ventana solicitado
+        if (event->is<sf::Event::Closed>()) {
+            close();
+        }
     }
 }
 
+// ¿La ventana sigue abierta?
+bool Window::isOpen() const {
+    if (!m_windowPtr) return false;
+    return m_windowPtr->isOpen();
+}
 
-/**
- * @brief Checks if the window is currently open.
- *
- * @return true if the window is open, false otherwise.
- */
-bool
-Window::isOpen() const {
-    if (!m_windowPtr.isNull()) {
-        return m_windowPtr->isOpen();
-    }
-    else {
-        ERROR("Window", "isOpen", "Window is null");
-        return false;
+// Limpia el backbuffer con un color (negro por defecto)
+void Window::clear(const sf::Color& color) {
+    if (!m_windowPtr) return;
+    m_windowPtr->clear(color);
+}
+
+// Dibuja cualquier sf::Drawable con estados opcionales
+void Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states) {
+    if (!m_windowPtr) return;
+    m_windowPtr->draw(drawable, states);
+}
+
+// Presenta en pantalla el contenido del frame
+void Window::display() {
+    if (!m_windowPtr) return;
+    m_windowPtr->display();
+}
+
+// Actualiza deltaTime usando un reloj interno; llamar una vez por frame
+void Window::update() {
+    if (!m_windowPtr) return;
+    deltaTime = clock.restart(); // tiempo transcurrido desde el último frame
+}
+
+// Paso de render adicional (placeholder para overlays o debug propio)
+void Window::render() {
+    // Actualmente no hace nada; útil si quieres dibujar HUD fuera de ImGui.
+}
+
+// Solicita el cierre de la ventana (no destruye el objeto aún)
+void Window::close() {
+    if (m_windowPtr && m_windowPtr->isOpen()) {
+        m_windowPtr->close();
     }
 }
 
-/**
- * @brief Clears the window with a specific background color.
- *
- * @param color The color to use when clearing the window.
- */
-void
-Window::clear(const sf::Color& color) {
-    if (!m_windowPtr.isNull()) {
-        m_windowPtr->clear(color);
-    }
-    else {
-        ERROR("Window", "clear", "Window is null");
+// Libera recursos asociados a la ventana y resetea el puntero
+void Window::destroy() {
+    if (m_windowPtr) {
+        if (m_windowPtr->isOpen()) m_windowPtr->close();
+        m_windowPtr.reset();
     }
 }
 
-/**
- * @brief Draws a drawable object to the window using specified render states.
- *
- * @param drawable The SFML drawable object to render.
- * @param states Optional render states to apply to the drawable.
- */
-void
-Window::draw(const sf::Drawable& drawable, const sf::RenderStates& states) {
-    if (!m_windowPtr.isNull()) {
-        m_windowPtr->draw(drawable, states);
-    }
-    else {
-        ERROR("Window", "draw", "Window is null");
-    }
-}
-
-/**
- * @brief Displays the contents of the current frame on the screen.
- */
-void
-Window::display() {
-    if (!m_windowPtr.isNull()) {
-        m_windowPtr->display();
-    }
-    else {
-        ERROR("Window", "display", "Window is null");
-    }
-}
-
-void
-Window::update() {
-    //Almacenar el deltaTime una sola vez
-    deltaTime = clock.restart();
-
-    //Use deltaTime for update InGui
-    ImGui::SFML::Update(*m_windowPtr, deltaTime);
-}
-
-void
-Window::render() {
-    ImGui::SFML::Render(*m_windowPtr);
-}
-
-
-/**
- * @brief Destroys the window and releases its resources safely.
- */
-void
-Window::destroy() {
-    ImGui::SFML::Shutdown();
-    m_windowPtr.release();
+// Acceso directo al sf::RenderWindow subyacente (referencia no nula asumida)
+sf::RenderWindow& Window::getInternal() {
+    // Si necesitas más seguridad, podrías añadir un assert aquí.
+    return *m_windowPtr;
 }

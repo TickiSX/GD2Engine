@@ -48,9 +48,6 @@
     <ClCompile Include="src\Texture.cpp">
       <Filter>Archivos de recursos</Filter>
     </ClCompile>
-    <ClCompile Include="src\Transform.cpp">
-      <Filter>Archivos de recursos</Filter>
-    </ClCompile>
     <ClCompile Include="src\Window.cpp">
       <Filter>Archivos de recursos</Filter>
     </ClCompile>

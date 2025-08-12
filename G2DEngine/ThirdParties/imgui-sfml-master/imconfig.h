@@ -6,8 +6,8 @@
 // A) You may edit imconfig.h (and not overwrite it when updating Dear ImGui, or maintain a patch/rebased branch with your modifications to it)
 // B) or '#define IMGUI_USER_CONFIG "my_imgui_config.h"' in your project and then add directives in your own file without touching this template.
 //-----------------------------------------------------------------------------
-// You need to make sure that configuration settings are defined consistently _everywhere_ Dear ImGui is used, which include the imgui*.cpp
-// files but also _any_ of your code that uses Dear ImGui. This is because some compile-time options have an affect on data structures.
+// You need to make sure that configuration settings are defined consistently everywhere Dear ImGui is used, which include the imgui*.cpp
+// files but also any of your code that uses Dear ImGui. This is because some compile-time options have an affect on data structures.
 // Defining those options in imconfig.h will ensure every compilation unit gets to see the same data structure layouts.
 // Call IMGUI_CHECKVERSION() from your .cpp file to verify that the data structures your files are using are matching the ones imgui.cpp is using.
 //-----------------------------------------------------------------------------
@@ -25,7 +25,7 @@
 //   for each static/DLL boundary you are calling from. Read "Context and Memory Allocators" section of imgui.cpp for more details.
 //#define IMGUI_API __declspec(dllexport)                   // MSVC Windows: DLL export
 //#define IMGUI_API __declspec(dllimport)                   // MSVC Windows: DLL import
-//#define IMGUI_API __attribute__((visibility("default")))  // GCC/Clang: override visibility when set is hidden
+//#define IMGUI_API _attribute_((visibility("default")))  // GCC/Clang: override visibility when set is hidden
 
 //---- Don't define obsolete functions/enums/behaviors. Consider enabling from time to time after updating to clean your code of obsolete function/names.
 //#define IMGUI_DISABLE_OBSOLETE_FUNCTIONS
@@ -121,7 +121,7 @@
 //---- Override ImDrawCallback signature (will need to modify renderer backends accordingly)
 //struct ImDrawList;
 //struct ImDrawCmd;
-//typedef void (*MyImDrawCallback)(const ImDrawList* draw_list, const ImDrawCmd* cmd, void* my_renderer_user_data);
+//typedef void (MyImDrawCallback)(const ImDrawList draw_list, const ImDrawCmd* cmd, void* my_renderer_user_data);
 //#define ImDrawCallback MyImDrawCallback
 
 //---- Debug Tools: Macro to break in Debugger (we provide a default implementation of this in the codebase)
@@ -129,7 +129,7 @@
 //#define IM_DEBUG_BREAK  IM_ASSERT(0)
 //#define IM_DEBUG_BREAK  __debugbreak()
 
-//---- Debug Tools: Enable highlight ID conflicts _before_ hovering items. When io.ConfigDebugHighlightIdConflicts is set.
+//---- Debug Tools: Enable highlight ID conflicts before hovering items. When io.ConfigDebugHighlightIdConflicts is set.
 // (THIS WILL SLOW DOWN DEAR IMGUI. Only use occasionally and disable after use)
 //#define IMGUI_DEBUG_HIGHLIGHT_ALL_ID_CONFLICTS
 
@@ -143,37 +143,3 @@ namespace ImGui
     void MyFunction(const char* name, MyMatrix44* mtx);
 }
 */
-// Add this to your imconfig.h
-
-#include <SFML/Graphics/Color.hpp>
-#include <SFML/System/CVector2.hpp>
-
-#include <cstdint>
-
-#include "imgui-SFML_export.h"
-
-#define IM_VEC2_CLASS_EXTRA                                          \
-    template <typename T>                                            \
-    ImVec2(const sf::Vector2<T>& v)                                  \
-    {                                                                \
-        x = static_cast<float>(v.x);                                 \
-        y = static_cast<float>(v.y);                                 \
-    }                                                                \
-                                                                     \
-    template <typename T>                                            \
-    operator sf::Vector2<T>() const                                  \
-    {                                                                \
-        return sf::Vector2<T>(static_cast<T>(x), static_cast<T>(y)); \
-    }
-
-#define IM_VEC4_CLASS_EXTRA                                                                     \
-    ImVec4(const sf::Color& c) : x(c.r / 255.f), y(c.g / 255.f), z(c.b / 255.f), w(c.a / 255.f) \
-    {                                                                                           \
-    }                                                                                           \
-    operator sf::Color() const                                                                  \
-    {                                                                                           \
-        return sf::Color(static_cast<std::uint8_t>(x * 255.f),                                  \
-                         static_cast<std::uint8_t>(y * 255.f),                                  \
-                         static_cast<std::uint8_t>(z * 255.f),                                  \
-                         static_cast<std::uint8_t>(w * 255.f));                                 \
-    }

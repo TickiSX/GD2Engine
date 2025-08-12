@@ -1,19 +1,17 @@
 #include "BaseApp.h"
+#include <iostream>
 
-/**
- * @file main.cpp
- * @brief Entry point of the application.
- */
-
- /**
-  * @brief Main function that initializes and runs the application.
-  *
-  * Creates an instance of the BaseApp class and calls its run method to start the application loop.
-  *
-  * @return int Exit status of the application. Returns 0 on successful execution.
-  */
-int
-main() {
-	BaseApp app;
-	return app.run();
+int main() {
+    try {
+        BaseApp app;
+        int result = app.run();
+        if (result != 0) {
+            std::cerr << "Application exited with error code: " << result << '\n';
+        }
+        return result;
+    }
+    catch (const std::exception& e) {
+        std::cerr << "Unhandled exception: " << e.what() << '\n';
+        return -1;
+    }
 }
