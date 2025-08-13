@@ -27,7 +27,7 @@ public:
 	~Texture() override = default;
 
 	void start() override {}
-	void update(float / dt / ) override {}
+	void update(float /*dt*/) override {}
 
 	// Dibuja el sprite
 	void render(const EngineUtilities::TSharedPointer<Window>& window) override;
