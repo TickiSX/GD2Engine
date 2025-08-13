@@ -1,4 +1,6 @@
 // [DEAR IMGUI]
+    // Devuelve true si hay una selección activa en el estado de edición de texto.
+    #define STB_TEXT_HAS_SELECTION(state) ((state).select_start != (state).select_end)
 // This is a slightly modified version of stb_textedit.h 1.14.
 // Those changes would need to be pushed into nothings/stb:
 // - Fix in stb_textedit_discard_redo (see https://github.com/nothings/stb/issues/321)

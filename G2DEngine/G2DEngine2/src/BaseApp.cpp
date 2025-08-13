@@ -262,7 +262,7 @@ int BaseApp::run()
 bool BaseApp::init()
 {
     // 1) Ventana
-    m_windowPtr = EngineUtilities::MakeShared<Window>(1920, 1080, "VectonautaEngine");
+    m_windowPtr = EngineUtilities::MakeShared<Window>(1920, 1080, "G2DEngine2");
     if (!m_windowPtr) {
         ERROR("BaseApp", "init", "Failed to create window");
         return false;

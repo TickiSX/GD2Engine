@@ -84,7 +84,7 @@ void EngineGUI::setTheme(Theme theme)
     switch (theme) {
     case Theme::Grey:            setupGreyGUIStyle();           break;
     case Theme::Dark:            setupDarkGUIStyle();           break;
-    case Theme::VectonautaEngine: setupVectonautaEngineStyle(); break;
+    case Theme::G2DEngine2: setupG2DEngine2Style(); break;
     }
 }
 
@@ -110,7 +110,7 @@ void EngineGUI::renderMenuBar()
     }
 
     if (ImGui::BeginMenu("Theme")) {
-        const char* names[] = { "Grey","Dark","VectonautaEngine" };
+        const char* names[] = { "Grey","Dark","G2DEngine2" };
         for (int i = 0; i < 3; i++)
             if (ImGui::MenuItem(names[i], nullptr, m_currentTheme == Theme(i)))
                 setTheme(Theme(i));
@@ -125,7 +125,7 @@ void EngineGUI::renderControlPanel()
 {
     ImGui::Begin("Controls", nullptr, ImGuiWindowFlags_AlwaysAutoResize);
 
-    const char* names[] = { "Grey","Dark","VectonautaEngine" };
+    const char* names[] = { "Grey","Dark","G2DEngine2" };
     int cur = int(m_currentTheme);
 
     if (ImGui::Combo("Theme", &cur, names, 3))
@@ -149,18 +149,17 @@ void EngineGUI::setupGreyGUIStyle() { ImGui::StyleColorsClassic(); }
 // Aplica estilo oscuro predeterminado a ImGui
 void EngineGUI::setupDarkGUIStyle() { ImGui::StyleColorsDark(); }
 
-// Aplica estilo personalizado "VectonautaEngine" con colores y redondeos
-void EngineGUI::setupVectonautaEngineStyle()
+// Aplica estilo personalizado "G2DEngine2" con colores y redondeos
+void EngineGUI::setupG2DEngine2Style()
 {
     ImGui::StyleColorsDark();
     auto& s = ImGui::GetStyle();
     s.WindowRounding = 6.f;
     s.FrameRounding = 4.f;
 
-    ImVec4 gold{ 0.92f, 0.75f, 0.20f, 1.0f };
-    s.Colors[ImGuiCol_ButtonHovered] = gold;
+    ImVec4 blue{ 0.92f, 0.75f, 0.20f, 1.0f };
+    s.Colors[ImGuiCol_ButtonHovered] = blue;
     s.Colors[ImGuiCol_ButtonActive] = ImVec4(0.80f, 0.65f, 0.18f, 1.0f);
-    s.Colors[ImGuiCol_Border] = gold;
+    s.Colors[ImGuiCol_Border] = blue;
 
-    // Puedes agregar más ajustes de colores si quieres
 }

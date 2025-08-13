@@ -20,7 +20,7 @@ public:
      * @enum Theme
      * @brief Temas disponibles para el estilo visual de la GUI.
      */
-    enum class Theme { Grey = 0, Dark = 1, VectonautaEngine = 2 };
+    enum class Theme { Grey = 0, Dark = 1, G2DEngine2 = 2 };
 
     /**
      * @brief Constructor por defecto.
@@ -133,14 +133,14 @@ private:
     void setupDarkGUIStyle();
 
     /**
-     * @brief Configura el estilo visual "VectonautaEngine".
+     * @brief Configura el estilo visual "G2DEngine2".
      */
-    void setupVectonautaEngineStyle();
+    void setupG2DEngine2Style();
 
     bool m_requestQuit = false;   ///< Solicitud de cierre de la aplicación.
     bool m_requestReset = false;  ///< Solicitud de reinicio de waypoints.
     bool m_paused = false;        ///< Estado de pausa del juego.
     float m_speedMultiplier = 1.f;///< Factor de velocidad del juego.
-    Theme m_currentTheme = Theme::VectonautaEngine; ///< Tema visual actual.
+    Theme m_currentTheme = Theme::G2DEngine2; ///< Tema visual actual.
     std::vector<EngineUtilities::TSharedPointer<A_Racer>> m_racers; ///< Lista de corredores mostrados en GUI.
 };
